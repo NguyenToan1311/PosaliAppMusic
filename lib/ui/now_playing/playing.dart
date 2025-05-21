@@ -35,9 +35,11 @@ class _NowPlayingPageState extends State<NowPlayingPage>
   late AudioPlayerManager _audioPlayerManager;
   late int _selectedItemIndex;
   late Song _song;
+  late double _currentAnimationPosition;
   @override
   void initState() {
     super.initState();
+    _currentAnimationPosition = 0.0;
     _song = widget.playingSong;
     _imageAnimController = AnimationController(
       vsync: this,
@@ -163,6 +165,7 @@ class _NowPlayingPageState extends State<NowPlayingPage>
   @override
   void dispose() {
     _audioPlayerManager.dispose();
+    _imageAnimController.dispose();
     super.dispose();
   }
 
@@ -249,6 +252,8 @@ class _NowPlayingPageState extends State<NowPlayingPage>
           return MediaButtonControl(
             function: () {
               _audioPlayerManager.player.play();
+              _imageAnimController.forward(from: _currentAnimationPosition);
+              _imageAnimController.repeat();
             },
             icon: Icons.play_arrow,
             color: null,
@@ -258,14 +263,22 @@ class _NowPlayingPageState extends State<NowPlayingPage>
           return MediaButtonControl(
             function: () {
               _audioPlayerManager.player.pause();
+              _imageAnimController.stop();
+              _currentAnimationPosition = _imageAnimController.value;
             },
             icon: Icons.pause,
             color: null,
             size: 48,
           );
         } else {
+          if(processingState == ProcessingState.completed) {
+            _imageAnimController.stop();
+            _currentAnimationPosition = 0.0;
+          }
           return MediaButtonControl(
             function: () {
+              _imageAnimController.forward(from: _currentAnimationPosition);
+              _imageAnimController.repeat();
               _audioPlayerManager.player.seek(Duration.zero);
             },
             icon: Icons.replay,
