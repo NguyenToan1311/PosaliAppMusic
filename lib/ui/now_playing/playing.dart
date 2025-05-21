@@ -33,17 +33,19 @@ class _NowPlayingPageState extends State<NowPlayingPage>
     with SingleTickerProviderStateMixin {
   late AnimationController _imageAnimController;
   late AudioPlayerManager _audioPlayerManager;
+  late int _selectedItemIndex;
+  late Song _song;
   @override
   void initState() {
     super.initState();
+    _song = widget.playingSong;
     _imageAnimController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 12000),
     );
-    _audioPlayerManager = AudioPlayerManager(
-      songUrl: widget.playingSong.source,
-    );
+    _audioPlayerManager = AudioPlayerManager(songUrl: _song.source);
     _audioPlayerManager.init();
+    _selectedItemIndex = widget.songs.indexOf(widget.playingSong);
   }
 
   @override
@@ -69,7 +71,7 @@ class _NowPlayingPageState extends State<NowPlayingPage>
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(widget.playingSong.album),
+              Text(_song.album),
               const SizedBox(height: 16),
               const Text('_ ___ _'),
               const SizedBox(height: 48),
@@ -82,7 +84,7 @@ class _NowPlayingPageState extends State<NowPlayingPage>
                   borderRadius: BorderRadius.circular(radius),
                   child: FadeInImage.assetNetwork(
                     placeholder: 'assets/ITunes_12.2_logo.png',
-                    image: widget.playingSong.image,
+                    image: _song.image,
                     width: screenWidth - delta,
                     height: screenWidth - delta,
                     imageErrorBuilder: (context, error, stackTrace) {
@@ -109,7 +111,7 @@ class _NowPlayingPageState extends State<NowPlayingPage>
                       Column(
                         children: [
                           Text(
-                            widget.playingSong.title,
+                            _song.title,
                             style: Theme.of(
                               context,
                             ).textTheme.bodyMedium!.copyWith(
@@ -119,7 +121,7 @@ class _NowPlayingPageState extends State<NowPlayingPage>
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            widget.playingSong.artist,
+                            _song.artist,
                             style: Theme.of(
                               context,
                             ).textTheme.bodyMedium!.copyWith(
@@ -172,26 +174,26 @@ class _NowPlayingPageState extends State<NowPlayingPage>
           const MediaButtonControl(
             function: null,
             icon: Icons.shuffle,
-            color: Colors.deepPurple,
+            color: const Color.fromARGB(255, 2, 84, 122),
             size: 24,
           ),
-          const MediaButtonControl(
-            function: null,
+          MediaButtonControl(
+            function: _setPrevSong,
             icon: Icons.skip_previous,
-            color: Colors.deepPurple,
+            color: const Color.fromARGB(255, 2, 84, 122),
             size: 36,
           ),
           _playButton(),
-          const MediaButtonControl(
-            function: null,
+          MediaButtonControl(
+            function: _setNextSong,
             icon: Icons.skip_next,
-            color: Colors.deepPurple,
+            color: const Color.fromARGB(255, 2, 84, 122),
             size: 36,
           ),
           const MediaButtonControl(
             function: null,
             icon: Icons.repeat,
-            color: Colors.deepPurple,
+            color: const Color.fromARGB(255, 2, 84, 122),
             size: 36,
           ),
         ],
@@ -208,7 +210,7 @@ class _NowPlayingPageState extends State<NowPlayingPage>
         final buffered = durationState?.buffered ?? Duration.zero;
         final total = durationState?.total ?? Duration.zero;
         return ProgressBar(
-          progress: progress, 
+          progress: progress,
           total: total,
           buffered: buffered,
           onSeek: _audioPlayerManager.player.seek,
@@ -220,10 +222,10 @@ class _NowPlayingPageState extends State<NowPlayingPage>
           // ignore: deprecated_member_use
           bufferedBarColor: Colors.grey.withOpacity(0.3),
           thumbColor: const Color.fromARGB(255, 2, 84, 122),
-  
+          // ignore: deprecated_member_use
           thumbGlowColor: Colors.green.withOpacity(0.3),
           thumbRadius: 10.0,
-          );
+        );
       },
     );
   }
@@ -274,6 +276,30 @@ class _NowPlayingPageState extends State<NowPlayingPage>
       },
     );
   }
+
+void _setNextSong() async {
+  if (_selectedItemIndex < widget.songs.length - 1) {
+    ++_selectedItemIndex;
+    final nextSong = widget.songs[_selectedItemIndex];
+    await _audioPlayerManager.updateSongUrl(nextSong.source);
+    await _audioPlayerManager.player.seek(Duration.zero);
+    setState(() {
+      _song = nextSong;
+    });
+  }
+}
+
+void _setPrevSong() async {
+  if (_selectedItemIndex > 0) {
+    --_selectedItemIndex;
+    final prevSong = widget.songs[_selectedItemIndex];
+    await _audioPlayerManager.updateSongUrl(prevSong.source);
+    await _audioPlayerManager.player.seek(Duration.zero);
+    setState(() {
+      _song = prevSong;
+    });
+  }
+}
 }
 
 class MediaButtonControl extends StatefulWidget {

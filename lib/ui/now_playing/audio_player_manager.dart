@@ -9,17 +9,32 @@ class AudioPlayerManager {
   String songUrl;
 
   void init() {
+    // Khởi tạo stream 1 lần
     durationState = Rx.combineLatest2<Duration, PlaybackEvent, DurationState>(
-      player.positionStream, 
-      player.playbackEventStream, 
-    (position, playbackEvent) => DurationState(progress: position, buffered: playbackEvent.bufferedPosition, total: playbackEvent.duration));
+      player.positionStream,
+      player.playbackEventStream,
+      (position, playbackEvent) => DurationState(
+        progress: position,
+        buffered: playbackEvent.bufferedPosition,
+        total: playbackEvent.duration,
+      ),
+    );
+
+    // Gọi load bài đầu tiên
     player.setUrl(songUrl);
-}
+  }
+
+  // Đổi bài mới và chờ load hoàn tất
+  Future<void> updateSongUrl(String url) async {
+    songUrl = url;
+    await player.setUrl(songUrl); // Chờ load bài mới xong
+  }
 
   void dispose() {
     player.dispose();
   }
 }
+
 class DurationState {
   const DurationState({
     required this.progress,
