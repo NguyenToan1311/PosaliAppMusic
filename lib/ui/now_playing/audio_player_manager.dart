@@ -15,6 +15,10 @@ class AudioPlayerManager {
     (position, playbackEvent) => DurationState(progress: position, buffered: playbackEvent.bufferedPosition, total: playbackEvent.duration));
     player.setUrl(songUrl);
 }
+
+  void dispose() {
+    player.dispose();
+  }
 }
 class DurationState {
   const DurationState({

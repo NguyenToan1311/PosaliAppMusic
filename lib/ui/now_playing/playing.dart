@@ -3,6 +3,7 @@ import 'package:appnghenhac/ui/now_playing/audio_player_manager.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:just_audio/just_audio.dart';
 
 class NowPlaying extends StatelessWidget {
   const NowPlaying({super.key, required this.playingSong, required this.songs});
@@ -147,12 +148,7 @@ class _NowPlayingPageState extends State<NowPlayingPage>
                 child: _progressBar(),
               ),
               Padding(
-                padding: const EdgeInsets.only(
-                 
-                  left: 24,
-                  right: 24,
-                  
-                ),
+                padding: const EdgeInsets.only(left: 24, right: 24),
                 child: _mediaButtons(),
               ),
             ],
@@ -162,16 +158,42 @@ class _NowPlayingPageState extends State<NowPlayingPage>
     );
   }
 
-  Widget _mediaButtons(){
-    return const SizedBox(
+  @override
+  void dispose() {
+    _audioPlayerManager.dispose();
+    super.dispose();
+  }
+
+  Widget _mediaButtons() {
+    return SizedBox(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          MediaButtonControl(function: null, icon: Icons.shuffle, color: Colors.deepPurple, size: 24),
-          MediaButtonControl(function: null, icon: Icons.skip_previous, color: Colors.deepPurple, size: 36),
-          MediaButtonControl(function: null, icon: Icons.play_arrow_sharp, color: Colors.deepPurple, size: 48),
-          MediaButtonControl(function: null, icon: Icons.skip_next, color: Colors.deepPurple, size: 36),
-          MediaButtonControl(function: null, icon: Icons.repeat, color: Colors.deepPurple, size: 36),
+          const MediaButtonControl(
+            function: null,
+            icon: Icons.shuffle,
+            color: Colors.deepPurple,
+            size: 24,
+          ),
+          const MediaButtonControl(
+            function: null,
+            icon: Icons.skip_previous,
+            color: Colors.deepPurple,
+            size: 36,
+          ),
+          _playButton(),
+          const MediaButtonControl(
+            function: null,
+            icon: Icons.skip_next,
+            color: Colors.deepPurple,
+            size: 36,
+          ),
+          const MediaButtonControl(
+            function: null,
+            icon: Icons.repeat,
+            color: Colors.deepPurple,
+            size: 36,
+          ),
         ],
       ),
     );
@@ -185,7 +207,70 @@ class _NowPlayingPageState extends State<NowPlayingPage>
         final progress = durationState?.progress ?? Duration.zero;
         final buffered = durationState?.buffered ?? Duration.zero;
         final total = durationState?.total ?? Duration.zero;
-        return ProgressBar(progress: progress, total: total);
+        return ProgressBar(
+          progress: progress, 
+          total: total,
+          buffered: buffered,
+          onSeek: _audioPlayerManager.player.seek,
+          barHeight: 5.0,
+          barCapShape: BarCapShape.round,
+          // ignore: deprecated_member_use
+          baseBarColor: Colors.grey.withOpacity(0.3),
+          progressBarColor: Colors.green,
+          // ignore: deprecated_member_use
+          bufferedBarColor: Colors.grey.withOpacity(0.3),
+          thumbColor: const Color.fromARGB(255, 2, 84, 122),
+  
+          thumbGlowColor: Colors.green.withOpacity(0.3),
+          thumbRadius: 10.0,
+          );
+      },
+    );
+  }
+
+  StreamBuilder<PlayerState> _playButton() {
+    return StreamBuilder(
+      stream: _audioPlayerManager.player.playerStateStream,
+      builder: (context, snapshot) {
+        final playerState = snapshot.data;
+        final processingState = playerState?.processingState;
+        final playing = playerState?.playing;
+        if (processingState == ProcessingState.loading ||
+            processingState == ProcessingState.buffering) {
+          return Container(
+            margin: const EdgeInsets.all(8),
+            width: 48,
+            height: 48,
+            child: const CircularProgressIndicator(),
+          );
+        } else if (playing != true) {
+          return MediaButtonControl(
+            function: () {
+              _audioPlayerManager.player.play();
+            },
+            icon: Icons.play_arrow,
+            color: null,
+            size: 48,
+          );
+        } else if (processingState != ProcessingState.completed) {
+          return MediaButtonControl(
+            function: () {
+              _audioPlayerManager.player.pause();
+            },
+            icon: Icons.pause,
+            color: null,
+            size: 48,
+          );
+        } else {
+          return MediaButtonControl(
+            function: () {
+              _audioPlayerManager.player.seek(Duration.zero);
+            },
+            icon: Icons.replay,
+            color: null,
+            size: 48,
+          );
+        }
       },
     );
   }
