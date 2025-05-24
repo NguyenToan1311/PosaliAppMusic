@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "869160705296",
+    "project_id": "posalino-b8d75",
+    "storage_bucket": "posalino-b8d75.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:869160705296:android:7b93c17adbd10e19011995",
+        "android_client_info": {
+          "package_name": "com.example.appnghenhac"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC6mUOUKYaCPpdaVW1NL-hp-KPTcgLQuQ0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

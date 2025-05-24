@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="gcm_defaultSenderId" translatable="false">869160705296</string>
+    <string name="google_api_key" translatable="false">AIzaSyC6mUOUKYaCPpdaVW1NL-hp-KPTcgLQuQ0</string>
+    <string name="google_app_id" translatable="false">1:869160705296:android:7b93c17adbd10e19011995</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyC6mUOUKYaCPpdaVW1NL-hp-KPTcgLQuQ0</string>
+    <string name="google_storage_bucket" translatable="false">posalino-b8d75.firebasestorage.app</string>
+    <string name="project_id" translatable="false">posalino-b8d75</string>
+</resources>

@@ -2,27 +2,31 @@ import 'package:just_audio/just_audio.dart';
 import 'package:rxdart/rxdart.dart';
 
 class AudioPlayerManager {
-  AudioPlayerManager({required this.songUrl});
+  AudioPlayerManager._internal();
+  factory AudioPlayerManager() => _instance;
+  static final AudioPlayerManager _instance  = AudioPlayerManager._internal();
 
   final player = AudioPlayer();
   Stream<DurationState>? durationState;
-  String songUrl;
+  String songUrl = "";
 
-  void init() {
-    // Khởi tạo stream 1 lần
-    durationState = Rx.combineLatest2<Duration, PlaybackEvent, DurationState>(
-      player.positionStream,
-      player.playbackEventStream,
-      (position, playbackEvent) => DurationState(
-        progress: position,
-        buffered: playbackEvent.bufferedPosition,
-        total: playbackEvent.duration,
-      ),
-    );
+void prepare({bool isNewSong = false}) {
+  durationState = Rx.combineLatest2<Duration, PlaybackEvent, DurationState>(
+    player.positionStream,
+    player.playbackEventStream,
+    (position, playbackEvent) => DurationState(
+      progress: position,
+      buffered: playbackEvent.bufferedPosition,
+      total: playbackEvent.duration,
+    ),
+  );
 
-    // Gọi load bài đầu tiên
+  if (isNewSong) {
     player.setUrl(songUrl);
+    player.seek(Duration.zero); // ✅ Reset progress bar tại đây nếu bài mới
   }
+}
+
 
   // Đổi bài mới và chờ load hoàn tất
   Future<void> updateSongUrl(String url) async {

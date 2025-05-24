@@ -1,6 +1,7 @@
 import 'package:appnghenhac/data/model/song.dart';
 import 'package:appnghenhac/ui/discovery/discovery.dart';
 import 'package:appnghenhac/ui/home/viewmodel.dart';
+import 'package:appnghenhac/ui/now_playing/audio_player_manager.dart';
 import 'package:appnghenhac/ui/now_playing/playing.dart';
 import 'package:appnghenhac/ui/settings/settings.dart';
 import 'package:appnghenhac/ui/user/user.dart';
@@ -109,6 +110,7 @@ class _HomeTabPageState extends State<HomeTabPage> {
   @override
   void dispose(){
     _viewModel.songStream.close();
+    AudioPlayerManager().dispose();
     super.dispose();
   }
 
