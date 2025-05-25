@@ -35,15 +35,34 @@ class MusicHomePage extends StatefulWidget {
 class _MusicHomePageState extends State<MusicHomePage> {
   final List<Widget> _tabs = [
     const HomeTab(),
-    const SettingsTab(),
-    const AccountTab(),
     const DiscoveryTab(),
+    const AccountTab(),
+    const SettingsTab(),
   ];
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: const CupertinoNavigationBar(
-        middle: Text('POSALI'),
+      navigationBar: CupertinoNavigationBar(
+        middle: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Replace "assets/posali_logo.png" with your asset path or use NetworkImage if needed
+            Image.asset(
+              'assets/ITunes_12.2_logo.png',
+              width: 32,
+              height: 32,
+              fit: BoxFit.contain,
+            ),
+            const SizedBox(width: 8),
+            const Text(
+              'POSALI',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+              ),
+            ),
+          ],
+        ),
       ),
       child: CupertinoTabScaffold(
         tabBar: CupertinoTabBar(
@@ -88,7 +107,6 @@ class _HomeTabPageState extends State<HomeTabPage> {
     _viewModel = PosaliViewModel();
     _viewModel.loadSongs();
     observeData();
-    // TODO: implement initState
     super.initState();
   }
   @override
@@ -129,18 +147,18 @@ class _HomeTabPageState extends State<HomeTabPage> {
         return const Divider(
           color: Colors.grey,
           thickness: 1,
-            indent: 24,
-            endIndent: 24,
+          indent: 24,
+          endIndent: 24,
         );
       },
       itemCount: songs.length, 
-    shrinkWrap: true,
-      );
+      shrinkWrap: true,
+    );
   }
 
   Widget getRow(int index) {
     return _SongItemSection(parent: this, 
-    song: songs[index], 
+      song: songs[index], 
     );
   }
   void observeData(){
@@ -157,18 +175,20 @@ class _HomeTabPageState extends State<HomeTabPage> {
         borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
         child: Container(
           height: 400,
-            color: Colors.lightBlueAccent,
-            child: Center(
-              child: Column(
+          color: Colors.lightBlueAccent,
+          child: Center(
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                const Text('Modal Bottom Sheet'),
-                ElevatedButton(onPressed: () => Navigator.pop(context), child: const Text('Close Bottom Sheet'), 
+                const Text('Tải xuống'),
+                ElevatedButton(
+                  onPressed: () => Navigator.pop(context), 
+                  child: const Text('Thêm vào thư viện'), 
                 )
               ],
             ),
-            ),
+          ),
         ),
       );
     });
@@ -203,35 +223,31 @@ class _SongItemSection extends StatelessWidget {
       ),
       leading: ClipRRect(
         borderRadius: BorderRadius.circular(16),
-        child: FadeInImage.assetNetwork(placeholder: 'assets/ITunes_12.2_logo.png', 
-        image: song.image,
-      width: 48,
-      height: 48,
-      imageErrorBuilder: (context, error, stackTrace){
-        return Image.asset(
-          'assets/ITunes_12.2_logo.png',
-        width: 48,
-        height: 48,
-        );
-      }
+        child: FadeInImage.assetNetwork(
+          placeholder: 'assets/ITunes_12.2_logo.png', 
+          image: song.image,
+          width: 48,
+          height: 48,
+          imageErrorBuilder: (context, error, stackTrace){
+            return Image.asset(
+              'assets/ITunes_12.2_logo.png',
+              width: 48,
+              height: 48,
+            );
+          }
+        ),
       ),
-      ),
-      title: Text(
-        song.title
-      ),
+      title: Text(song.title),
       subtitle: Text(song.artist),
-      trailing: IconButton(icon: const Icon(Icons.more_horiz),
-      onPressed: () {
-        parent.showBottomSheet();
-
-      },
+      trailing: IconButton(
+        icon: const Icon(Icons.more_horiz),
+        onPressed: () {
+          parent.showBottomSheet();
+        },
       ),
       onTap: () {
         parent.navigate(song);
-
       },
     );
   }
-
-
 }

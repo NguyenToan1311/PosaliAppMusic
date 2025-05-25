@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'new_login.dart'; // Import màn đăng nhập mới (đảm bảo tên file đúng)
+import 'new_login.dart'; // Đảm bảo tên file và widget đúng
 
 class EmailSignUpScreen extends StatefulWidget {
   const EmailSignUpScreen({super.key});
@@ -59,8 +59,10 @@ class _EmailSignUpScreenState extends State<EmailSignUpScreen> {
         });
       }
       if (mounted) {
+        // Lưu lại context màn hình cha
+        final parentContext = context;
         showDialog(
-          context: context,
+          context: parentContext,
           barrierDismissible: false,
           builder: (_) => AlertDialog(
             title: const Text("Đăng ký thành công"),
@@ -68,10 +70,14 @@ class _EmailSignUpScreenState extends State<EmailSignUpScreen> {
             actions: [
               TextButton(
                 onPressed: () {
-                  Navigator.of(context).pop(); // Đóng dialog
-                  Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) => const NewLoginScreen()),
-                  );
+                  // Đóng dialog trước
+                  Navigator.of(parentContext, rootNavigator: true).pop();
+                  // Đợi dialog đóng hoàn toàn rồi mới chuyển màn đăng nhập
+                  Future.delayed(Duration.zero, () {
+                    Navigator.of(parentContext).pushReplacement(
+                      MaterialPageRoute(builder: (_) => const NewLoginScreen()),
+                    );
+                  });
                 },
                 child: const Text("Đi đến đăng nhập"),
               ),
