@@ -1,38 +1,40 @@
-import 'package:appnghenhac/ui/email_signup_screen.dart';
-import 'package:appnghenhac/ui/login.dart';
-import 'package:flutter/material.dart';
+import 'package:appnghenhac/ui/email_signup_screen.dart'; // Import màn hình đăng ký bằng email
+import 'package:appnghenhac/ui/login.dart'; // Import màn hình đăng nhập
+import 'package:flutter/material.dart'; // Import thư viện giao diện Flutter
 
+// Widget màn hình đăng ký chính
 class posaliSignUpScreen extends StatelessWidget {
-  const posaliSignUpScreen({super.key});
+  const posaliSignUpScreen({super.key}); // Constructor mặc định
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Colors.black, // Màu nền toàn màn hình
       appBar: AppBar(
         backgroundColor: Colors.black,
-        elevation: 0,
+        elevation: 0, // Loại bỏ bóng đổ
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.white, size: 28),
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.white, size: 28), // Nút back
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pop(context); // Quay lại màn hình trước
           },
         ),
       ),
       body: SafeArea(
+        // Đảm bảo nội dung không bị che khuất bởi các phần như tai thỏ, thanh trạng thái
         child: Column(
           children: [
-            const SizedBox(height: 32),
-            // Logo
+            const SizedBox(height: 32), // Khoảng trống phía trên
+            // Logo ứng dụng ở giữa
             Center(
               child: Image.asset(
-                'assets/ITunes_12.2_logo.png', // Thay logo của bạn tại đây
+                'assets/ITunes_12.2_logo.png', // Đường dẫn logo (thay bằng logo của bạn)
                 width: 80,
                 height: 80,
               ),
             ),
-            const SizedBox(height: 40),
-            // Title
+            const SizedBox(height: 40), // Khoảng trống dưới logo
+            // Tiêu đề đăng ký
             const Text(
               'Đăng ký để bắt đầu nghe',
               textAlign: TextAlign.center,
@@ -44,17 +46,18 @@ class posaliSignUpScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 36),
-            // Đăng ký bằng email
+            // Các nút đăng ký
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Column(
                 children: [
+                  // Nút đăng ký bằng email
                   _SignUpButton(
                     onPressed: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const EmailSignUpScreen(),
+                          builder: (context) => const EmailSignUpScreen(), // Chuyển sang màn hình đăng ký bằng email
                         ),
                       );
                     },
@@ -65,6 +68,7 @@ class posaliSignUpScreen extends StatelessWidget {
                     border: BorderSide.none,
                   ),
                   const SizedBox(height: 16),
+                  // Nút đăng ký bằng số điện thoại
                   _SignUpButton(
                     onPressed: () {},
                     color: Colors.transparent,
@@ -74,27 +78,27 @@ class posaliSignUpScreen extends StatelessWidget {
                     border: const BorderSide(color: Colors.white54, width: 2),
                   ),
                   const SizedBox(height: 16),
+                  // Nút đăng ký bằng Google
                   _SignUpButton(
                     onPressed: () {},
                     color: Colors.transparent,
                     textColor: Colors.white,
-                    iconAsset:
-                        "assets/logogoogle.png", // Thay icon Google của bạn
+                    iconAsset: "assets/logogoogle.png", // Icon Google
                     text: "Tiếp tục bằng Google",
                     border: const BorderSide(color: Colors.white54, width: 2),
                   ),
                   const SizedBox(height: 16),
+                  // Nút đăng ký bằng Apple
                   _SignUpButton(
                     onPressed: () {},
                     color: Colors.transparent,
                     textColor: Colors.white,
-                    iconAsset:
-                        "assets/logoapple.png", // Thay icon Apple của bạn
+                    iconAsset: "assets/logoapple.png", // Icon Apple
                     text: "Tiếp tục bằng Apple",
                     border: const BorderSide(color: Colors.white54, width: 2),
                   ),
                   const SizedBox(height: 32),
-                  // Đăng nhập
+                  // Phần chuyển sang đăng nhập nếu đã có tài khoản
                   Column(
                     children: [
                       const Text(
@@ -106,7 +110,7 @@ class posaliSignUpScreen extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const posaliLoginScreen(),
+                              builder: (context) => const posaliLoginScreen(), // Chuyển sang màn hình đăng nhập
                             ),
                           );
                         },
@@ -125,8 +129,8 @@ class posaliSignUpScreen extends StatelessWidget {
                 ],
               ),
             ),
-            const Spacer(),
-            // Thanh dưới
+            const Spacer(), // Đẩy phần dưới xuống dưới cùng
+            // Thanh ngang nhỏ ở cuối màn hình (trang trí)
             Container(
               width: 120,
               height: 4,
@@ -143,15 +147,15 @@ class posaliSignUpScreen extends StatelessWidget {
   }
 }
 
-// Widget nút đăng ký tuỳ biến
+// Widget nút đăng ký tuỳ biến, dùng cho tất cả lựa chọn đăng ký
 class _SignUpButton extends StatelessWidget {
-  final VoidCallback? onPressed;
-  final Color color;
-  final Color textColor;
-  final IconData? icon;
-  final String? iconAsset;
-  final String text;
-  final BorderSide border;
+  final VoidCallback? onPressed; // Hàm xử lý khi bấm nút
+  final Color color; // Màu nền nút
+  final Color textColor; // Màu chữ/icon
+  final IconData? icon; // Icon sử dụng trực tiếp từ Flutter
+  final String? iconAsset; // Icon từ file ảnh (Google, Apple)
+  final String text; // Nội dung nút
+  final BorderSide border; // Viền nút
 
   const _SignUpButton({
     super.key,
@@ -170,25 +174,27 @@ class _SignUpButton extends StatelessWidget {
       height: 54,
       width: double.infinity,
       child: ElevatedButton(
-        onPressed: onPressed,
+        onPressed: onPressed, // Xử lý khi bấm nút
         style: ElevatedButton.styleFrom(
           backgroundColor: color,
           foregroundColor: textColor,
-          elevation: 0,
+          elevation: 0, // Không đổ bóng
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(32),
-            side: border,
+            borderRadius: BorderRadius.circular(32), // Bo góc nút
+            side: border, // Viền nút
           ),
           padding: const EdgeInsets.symmetric(horizontal: 16),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
+            // Hiển thị icon nếu có
             if (icon != null)
               Icon(icon, color: textColor, size: 24)
             else if (iconAsset != null)
               Image.asset(iconAsset!, width: 24, height: 24),
             const SizedBox(width: 18),
+            // Nội dung nút
             Expanded(
               child: Text(
                 text,
